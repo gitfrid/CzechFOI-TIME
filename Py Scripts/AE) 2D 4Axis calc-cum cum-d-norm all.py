@@ -64,7 +64,7 @@ def main():
         cumulative_dataframes_dvd.append(df_cumulative_dvd)
 
     # Calculate cumulative values for the vd DataFrames
-    # In normalization, deaths are excluded from the population, have been subtracted.
+    # In normalization, deaths are included in the population, have not been subtracted.
     cumulative_dataframes_vd = []
     for i, df in enumerate(dataframes_vd):
         df_cumulative_vd = df.copy()               
@@ -126,7 +126,7 @@ def main():
         # Update layout for dual y-axes
         fig.update_layout(
             title=(f'Age Group {plot_name} : {age_band} <br>'
-                   '<sup>In normalization, deaths are excluded from the population, have been subtracted.<br>'
+                   '<sup>In normalization, deaths are included in the population, have not been subtracted!<br>'
                    'The cumulative deaths are first normalized and then cumulated.<br>'
                    'Deselect all - double-click on a legend entry</sup>'),    
             xaxis=dict(title='Day from 2020-01-01'),
