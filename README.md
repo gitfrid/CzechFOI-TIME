@@ -28,7 +28,7 @@ _________________________________________
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2015-19.png width="600" height="auto">
-<br>death not subtracted from population
+<br>
 
 <br>**Example PVT_NUM_VD CUM NORM: 90-94**
 <br>death not subtracted from population
