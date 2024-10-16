@@ -5,7 +5,7 @@
 A solution that makes it easy to analyse, calculate and visualise FOI data in many ways.  
 Requires a certain IT affinity, but is simpler, faster and more flexible than using a spreadsheet.
 
-The resulting 2D diagrams are interactive HTML files that can be zoomed and rotated - more analyses will follow.
+The resulting 2D diagrams are interactive HTML files  - more analyses will follow.
 <br>To deselct all curves, double-click on a legend entry. To show a curve click onec on the legend entry. 
 <br>You can download them from the [Plot Results Folder](https://github.com/gitfrid/CzechFOI-TIME/tree/main/Plot%20Results)
 
