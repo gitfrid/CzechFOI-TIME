@@ -1,0 +1,17 @@
+These scripts generate plot results. 
+
+Each script includes the variable plot_name, which is used in naming the HTML plot file. 
+
+A function within each script creates an output folder for the plots,
+and copies the script into this folder. 
+
+Because scripts can be run with different parameters or CSV files, 
+this way all parameters are documented in the script along with the HTML plot files. 
+
+To use the scripts with modules, they need to be imported into the Python console first.
+
+
+
+Useful note on the use of plotly:
+
+https://plotly.com/python/plotly-express/

@@ -1,0 +1,5 @@
+The CSV files were exported from the views of the SQLite database file czech.db.
+
+The views were created with the SQL query “..\SQLQueries\All SQL Queries.sql”.
+
+The PVT_CUM files with the cumulated values were calculated by the Phyton scripts and saved as a CSV file
