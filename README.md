@@ -16,18 +16,18 @@ _________________________________________
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/dfc788d553d03307d4e71cbffab2cfcf0dad01c4/Plot%20Results/AF)%202D%204Axis%20calc-cum%20pop-minus-d%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2015-19.png width="600" height="auto">
 <br>
 
-<br>**Example PVT_NUM_VD CUM NORM: 15-19**
-<br>
-_________________________________________
-<br>
-<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/dfc788d553d03307d4e71cbffab2cfcf0dad01c4/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2015-19.png width="600" height="auto">
-<br>
-
 <br>**Example of PVT_NUM_D PVT_NUM_VD CUM NORM: 90-94**
 <br>
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/dfc788d553d03307d4e71cbffab2cfcf0dad01c4/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2090-94.png width="600" height="auto">
+<br>
+
+<br>**Example PVT_NUM_VD CUM NORM: 15-19**
+<br>
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/dfc788d553d03307d4e71cbffab2cfcf0dad01c4/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2015-19.png width="600" height="auto">
 <br>
 
 The original Czech FOI data, obtained through a Freedom of Information request, 
