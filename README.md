@@ -5,28 +5,29 @@
 A solution that makes it easy to analyse, calculate and visualise FOI data in many ways.  
 Requires a certain IT affinity, but is simpler, faster and more flexible than using a spreadsheet.
 
-The resulting 3D diagrams are interactive HTML files that can be zoomed and rotated - more analyses will follow. 
+The resulting 3D diagrams are interactive HTML files that can be zoomed and rotated - more analyses will follow.
+<br>To deselct all curves, double-click on a legend entry. To show a curve click onec on the legend entry. 
 <br>You can download them from the [Plot Results Folder](https://github.com/gitfrid/CzechFOI-TIME/tree/main/Plot%20Results)
 
-<br>**Example of an interactive 3D mesh plot of the Czech FOI data:**
+<br>**Example of an interactiveplot of the Czech FOI data PVT_NUM_D PVT_NUM_VD CUM NORM: 15-19**
 <br>
 _________________________________________
 <br>
-<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/37b8e8bbc23a9949b6cb0ed07e2ecf2f689873fd/Plot%20Results/AH)%203D%20Surface%20mesh%20AGE_2023_DAYS_D_NUM_D/AH)%203D%20Surface%20mesh%20AGE_2023_DAYS_D_NUM_D.png width="600" height="auto">
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/dfc788d553d03307d4e71cbffab2cfcf0dad01c4/Plot%20Results/AF)%202D%204Axis%20calc-cum%20pop-minus-d%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2015-19.png width="600" height="auto">
 <br>
 
-<br>**Example of an interactive 3D plot**
+<br>**Example PVT_NUM_VD CUM NORM: 15-19**
 <br>
 _________________________________________
 <br>
-<img src="https://github.com/gitfrid/CzechFOI-TIME/blob/34c018493dfc44892c4002d602790e891eafd7f8/Plot%20Results/AH)%203d%20surface%20PVT_CUM_NUM_UVX_D/AH)%203d%20surface%20PVT_CUM_NUM_UVX_D.png" width="600" height="auto">
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/dfc788d553d03307d4e71cbffab2cfcf0dad01c4/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2015-19.png width="600" height="auto">
 <br>
 
-<br>**Example of an interactive 2D plot**
+<br>**Example of PVT_NUM_D PVT_NUM_VD CUM NORM: 90-94**
 <br>
 _________________________________________
 <br>
-<img src="https://github.com/gitfrid/CzechFOI-TIME/blob/1438e171e38ca18246cbe914efbf8c931cceed6d/Plot%20Results/AE)%202D%203Axis%201Derivat%20norm%20PVT_CUM_NUM_D_NORM%20PVT_CUM_NUM/AE)%202D%203Axis%201Derivat%20norm%20PVT_CUM_NUM_D_NORM%20PVT_CUM_NUM.png" width="600" height="auto">
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/dfc788d553d03307d4e71cbffab2cfcf0dad01c4/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2090-94.png width="600" height="auto">
 <br>
 
 The original Czech FOI data, obtained through a Freedom of Information request, 
