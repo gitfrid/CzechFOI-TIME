@@ -7,6 +7,8 @@ from plotly.subplots import make_subplots
 import numpy as np
 import textwrap
 import plotly.express as px
+import xarray as xr
+import numpy as np
 
 
 def main():
@@ -16,17 +18,17 @@ def main():
         "title_text": "Rolling cross correlation",         
         "window_size_correl": 50,
         "window_size_mov_average": 14,
-        "max_lag": 1,  # Maximum lag (both positive and negative)
-        "normalize": True,
+        "max_lag": 1500,  # Maximum lag (both positive and negative)
+        "normalize": False,
         "normalize_cumulate_deaths": False,
         "population_minus_death": True,
-        "correl_data_series" : ""
+        "correl_data_series" : ""        
     } 
 
     pairs = [
-            ('Avg NUM_D', 'Avg NUM_DVX'),
-            ('Avg NUM_DVX', 'Avg NUM_DVD1'),
-            ('Avg NUM_D', 'Avg NUM_VDA')
+            ('Avg NUM_DVX','Avg NUM_VDA'),
+            ('Avg NUM_DUVX','Avg NUM_VDA'),
+            ('Avg NUM_D','Avg NUM_VDA')
     ]
     
     csv_files_dvd = [
@@ -136,37 +138,52 @@ def main():
         for i in range(0, len(dataframes_dvd)):
             for age_band in age_bands:
                 dataframes_dvd[i][age_band] = (dataframes_dvd[i][age_band] / cumulative_dataframes_vd[i][age_band]) * 100000
-    
-    # Modified rolling cross-correlation function with lag support
-    def rolling_ccf(series1, series2, window_size_correl, max_lag):
-        lags = range(-max_lag, max_lag + 1)  # Range of lags to include
-        ccf_results = {lag: [] for lag in lags}
+        
+    # Helper function cross-correlation to filter out zero values and align lengths
+    def filter_and_align(series1, series2):
+        non_zero_1 = series1[series1 != 0]
+        non_zero_2 = series2[series2 != 0]
+        min_length = min(len(non_zero_1), len(non_zero_2))
+        return non_zero_1[:min_length], non_zero_2[:min_length]
 
-        for i in range(len(series1) - window_size_correl + 1):
-            window_series1 = series1[i:i + window_size_correl]
+    def first_nonzero_index(series):
+        non_zero_indices = np.nonzero(series)[0]
+        if len(non_zero_indices) > 0:
+            return non_zero_indices[0]
+        else:
+            return None  # Handle this case as needed
+
+    def calculate_cross_correlation(series1, series2, max_lag):
+        # Prepare lags array
+        lags = np.arange(-max_lag, max_lag + 1)
+        ccf_results = xr.DataArray(np.zeros(lags.shape), coords=[lags], dims=['lag'])
+
+        for i, lag in enumerate(lags):
+            # Shift series2 according to lag, with zero fill to handle edges
+            shifted_series2 = series2.shift(time=abs(lag), fill_value=0) if lag != 0 else series2
             
-            # Handle NaNs in the window
-            if window_series1.isna().any() or series2.isna().any():
-                for lag in lags:
-                    ccf_results[lag].append(np.nan)
-                continue
-
-            for lag in lags:
-                if lag < 0:
-                    lagged_series2 = series2[i - lag:i + window_size_correl - lag]
-                else:
-                    lagged_series2 = series2[i + lag:i + window_size_correl + lag]
-                    
-                # Ensure the windows are the correct length and do not contain constant values
-                if len(window_series1) == len(lagged_series2) and window_series1.std() != 0 and lagged_series2.std() != 0:
-                    ccf = np.corrcoef(window_series1, lagged_series2)[0, 1]
-                    ccf_results[lag].append(ccf)
-                else:
-                    ccf_results[lag].append(np.nan)  # Fill with NaN if not calculable
+            # Use correlation calculation for each lag without pre-normalizing entire series
+            if lag < 0:
+                shifted_series2 = shifted_series2.roll(time=lag)  # Align for negative lags
+            else:
+                shifted_series2 = shifted_series2.roll(time=lag)
+                
+            # Calculate correlation, ignoring NaNs
+            ccf_results[i] = xr.corr(series1, shifted_series2, dim='time')
 
         return ccf_results
 
     
+    def first_nonzero_index(series):
+        print("Series content:", series)  # Debugging: Print the series to check its content
+        if isinstance(series, xr.DataArray):
+            series = series.values  # Convert to NumPy array for processing
+        non_zero_indices = np.nonzero(series)[0]
+        if len(non_zero_indices) > 0:
+            return non_zero_indices[0]
+        else:
+            return None  # Or handle this case as needed
+        
     # Choose a color palette with many colors
     color_palette = px.colors.qualitative.Dark24
 
@@ -235,30 +252,84 @@ def main():
                 line=dict(dash='dot', color=color_palette[i % len(color_palette)]),
                 name=f'cum {os.path.splitext(os.path.basename(csv_files_vd[i]))[0][4:]}'
             ), secondary_y=True)
-        
-        # Define colors for rolling cross correlation (CCF) curves 
+
+        # Define colors for 3 rolling correlation curves 
         colors = ['orangered', 'yellowgreen', 'deepskyblue']  
 
-        # Calculate rolling cross-correlation for each pair with multiple lags
+        # Extract moving averages from the traces
+        moving_averages = {trace.name: xr.DataArray(trace.y, dims='time', coords={'time': np.arange(len(trace.y))}) for trace in fig.data}
+
+        # calculate cross correlation CCF for moving averages of the 3  Dataseries pairs
+        # Extract moving averages from the traces
+        # moving_averages = {trace.name: trace.y for trace in fig.data if 'Avg' in trace.name}
+
+        # Use the moving averages for the CCF calculation
         for i, (name1, name2) in enumerate(pairs):
             try:
-                df1 = dataframes_dvd[0][age_band]
-                df2 = dataframes_dvd[1][age_band]
+                moving_avg_df1 = moving_averages[name1]
+                moving_avg_df2 = moving_averages[name2]
             except KeyError as e:
                 print(f"KeyError: {e} not found in moving_averages")
                 continue
-             
-            ccf_values = rolling_ccf(df1, df2, plt["window_size_correl"], plt["max_lag"])
-            
-            # Plot each lag’s rolling cross-correlation result on a separate trace
-            for lag, values in ccf_values.items():
+
+            # Filter and align the moving averages
+            filtered_df1, filtered_df2 = filter_and_align(moving_avg_df1, moving_avg_df2)
+
+            # Ensure filtered data is not empty and is 1D
+            if filtered_df1.size == 0 or filtered_df2.size == 0:
+                print("One of the filtered arrays is empty. Skipping this pair.")
+                continue  # Skip further processing for this pair
+
+            # Ensure arrays are 1D
+            if np.isscalar(filtered_df1):
+                filtered_df1 = np.array([filtered_df1])
+            if np.isscalar(filtered_df2):
+                filtered_df2 = np.array([filtered_df2])
+
+            print("Filtered DF1 shape:", filtered_df1.shape)
+            print("Filtered DF2 shape:", filtered_df2.shape)
+
+            start_idx1 = first_nonzero_index(filtered_df1)
+            start_idx2 = first_nonzero_index(filtered_df2)
+            start_idx = max(start_idx1 or 0, start_idx2 or 0)
+
+            # Trim arrays to start from the first non-zero index, if valid
+            if start_idx < len(filtered_df1) and start_idx < len(filtered_df2):
+                filtered_df1 = filtered_df1[start_idx:]
+                filtered_df2 = filtered_df2[start_idx:]
+
+            # Remove NaN values
+            filtered_df1 = filtered_df1[~np.isnan(filtered_df1)]
+            filtered_df2 = filtered_df2[~np.isnan(filtered_df2)]
+
+            # Ensure they are of equal length
+            min_length = min(len(filtered_df1), len(filtered_df2))
+            filtered_df1 = filtered_df1[:min_length]
+            filtered_df2 = filtered_df2[:min_length]
+
+            if len(filtered_df1) > 0 and len(filtered_df2) > 0:
+                # Convert to xarray DataArrays
+                moving_avg_df1 = xr.DataArray(filtered_df1, dims='time', coords={'time': np.arange(len(filtered_df1))})
+                moving_avg_df2 = xr.DataArray(filtered_df2, dims='time', coords={'time': np.arange(len(filtered_df2))})
+
+                # Calculate cross-correlation
+                cross_corr = calculate_cross_correlation(moving_avg_df1, moving_avg_df2, plt["max_lag"])
+
+                # Prepare x-values for plotting
+                x_values = cross_corr['lag'].values  # Using lag as x-values
+                y_values = cross_corr.values  # CCF values for plotting
+
+                # Add the trace for the cross-correlation
                 fig.add_trace(go.Scatter(
-                    x=dataframes_dvd[0].iloc[:len(values), 0],
-                    y=values,
+                    x=x_values,
+                    y=y_values,
                     mode='lines',
-                    line=dict(color=px.colors.qualitative.Dark24[i % len(color_palette)], width=1),
-                    name=f'CCF {name1}<br>{name2} Lag {lag}'
+                    name=f'CCF {name1}<br>{name2}',
+                    line=dict(dash='solid', width=1, color=colors[i % len(colors)]),
+                    xaxis=f'x{i+1}',  # Assign independent x-axes
                 ), secondary_y=True)
+
+                    
         
         # Update plot layout for dual y-axes 
         plo["age_band"] = age_band       
@@ -272,7 +343,7 @@ def main():
                 xanchor='center', 
                 yanchor='top'
             ),
-            xaxis=dict(title='Day from 2020-01-01'),
+            xaxis=dict(title='Lag Days'),
             yaxis=dict(
                 title=plo["yaxis1_title"],
                 side='left'
@@ -471,7 +542,7 @@ def init_plot_title(plt,pairs):
     else :
         yaxis3_title=f"Values Cumulative y3 DVD"
     if plt["population_minus_death"] :
-        subtitle_text = f'{subtitle_text}Deaths were subtracted from population<br>'           
+        subtitle_text = f'{subtitle_text}Deaths were subtracted from population, X-axis Date - days from 2020-01-01<br>'           
     else :
         subtitle_text = f'{subtitle_text}Deaths not! subtracted from population<br>'
     subtitle_text = f'{subtitle_text}To deselect all - double-click on a legend entry'
