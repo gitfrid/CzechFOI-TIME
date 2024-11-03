@@ -37,6 +37,22 @@ _________________________________________
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2090-94.png width="600" height="auto">
 <br>
 
+<br>**Example rolling cross correlation: 75-79**
+<br>death not subtracted from population
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20correl%20CCF%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20LAG_1500%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D/AG)%202D%204Axis%20correl%20CCF%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20LAG_1500%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D%20AG_75-79.png width="600" height="auto">
+<br>
+
+<br>**Example rolling correlation significance test: 75-79**
+<br>death not subtracted from population
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20significance%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D/AG)%202D%204Axis%20significance%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D%20AG_75-79.png width="600" height="auto">
+<br>
+
+
+
 The original Czech FOI data, obtained through a Freedom of Information request, 
 <br>The file Vesely_106_202403141131.CSV can be downloaded at [FOI Link](https://github.com/PalackyUniversity/uzis-data-analysis/blob/main/data/Vesely_106_202403141131.tar.xz)
 
