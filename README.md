@@ -9,7 +9,7 @@ The resulting 2D diagrams are interactive HTML files  - more analyses will follo
 <br>To deselct all curves, double-click on a legend entry. To show a curve click onec on the legend entry. 
 <br>You can download them from the [Plot Results Folder](https://github.com/gitfrid/CzechFOI-TIME/tree/main/Plot%20Results)
 
-<br>**Example of an interactiveplot of the Czech FOI data PVT_NUM_D PVT_NUM_VD CUM NORM: 15-19**
+<br>**Example of an interactive plot of the Czech FOI data PVT_NUM_D PVT_NUM_VD CUM NORM: 15-19**
 <br>death subtracted from population
 _________________________________________
 <br>
