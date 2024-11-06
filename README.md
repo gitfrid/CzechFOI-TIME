@@ -24,31 +24,39 @@ _________________________________________
 <br>
 
 <br>**Example PVT_NUM_VD CUM NORM: 15-19**
-<br>death not subtracted from population
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2015-19.png width="600" height="auto">
 <br>
 
 <br>**Example PVT_NUM_VD CUM NORM: 90-94**
-<br>death not subtracted from population
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AE)%202D%204Axis%20calc-cum%20cum-d-norm%20all%20PVT_NUM_D%20PVT_NUM_VD%20CUM%20NORM/Screenshot%2090-94.png width="600" height="auto">
 <br>
 
 <br>**Example rolling cross correlation: 75-79**
-<br>death not subtracted from population
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20correl%20CCF%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20LAG_1500%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D/AG)%202D%204Axis%20correl%20CCF%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20LAG_1500%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D%20AG_75-79.png width="600" height="auto">
 <br>
 
+<br>**Example rolling pearson correlation: 75-79**
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20correl%20pearson%20all%20NORM%20AVGWD_14%20CORRWD_50/AG)%202D%204Axis%20correl%20pearson%20all%20NORM%20AVGWD_14%20CORRWD_50%20AG_75-79.png width="600" height="auto">
+<br>
+
 <br>**Example rolling correlation significance test: 75-79**
-<br>death not subtracted from population
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20significance%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D/AG)%202D%204Axis%20significance%20xarray%20all%20POP-D%20N-CUM-D%20N%20AVG_14%20CORR_50%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D%20AG_75-79.png width="600" height="auto">
+<br>
+
+<br>**Example cross recurrence: 75-79**
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20cross%20recurrence%20xarray%20all%20POP-D%20AVG_14%20RP_treshold_0.25%20NUM_VDA-NUM_DVX%20NUM_VDA-NUM_DUVX%20NUM_VDA-NUM_D/AG)%202D%204Axis%20cross%20recurrence%20xarray%20all%20POP-D%20AVG_14%20RP_treshold_0.25%20NUM_VDA-NUM_DVX%20NUM_VDA-NUM_DUVX%20NUM_VDA-NUM_D%20AG_75-79.png width="600" height="auto">
 <br>
 
 
