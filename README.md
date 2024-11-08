@@ -59,7 +59,17 @@ _________________________________________
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20cross%20recurrence%20xarray%20all%20POP-D%20AVG_14%20RP_treshold_0.25%20NUM_VDA-NUM_DVX%20NUM_VDA-NUM_DUVX%20NUM_VDA-NUM_D/AG)%202D%204Axis%20cross%20recurrence%20xarray%20all%20POP-D%20AVG_14%20RP_treshold_0.25%20NUM_VDA-NUM_DVX%20NUM_VDA-NUM_DUVX%20NUM_VDA-NUM_D%20AG_75-79.png width="600" height="auto">
 <br>
 
+<br>**Example rolling pearson 1st derivate: 75-79**
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20derivate%20pearson%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50/AG)%202D%204Axis%20derivate%20pearson%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50%20AG_75-79.png width="600" height="auto">
+<br>
 
+<br>**Example rolling pearson 2nd derivate: 75-79**
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20derivate%20pearson%202D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50/AG)%202D%204Axis%20derivate%20pearson%202D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50%20AG_75-79.png width="600" height="auto">
+<br>
 
 The original Czech FOI data, obtained through a Freedom of Information request, 
 <br>The file Vesely_106_202403141131.CSV can be downloaded at [FOI Link](https://github.com/PalackyUniversity/uzis-data-analysis/blob/main/data/Vesely_106_202403141131.tar.xz)
