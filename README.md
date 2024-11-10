@@ -15,8 +15,8 @@ _________________________________________
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20age-compare%20pearson%20same%20scale%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50/AG)%202D%204Axis%20age-compare%20pearson%20same%20scale%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50%20AG_75-79%20vs%2080-84.png width="600" height="auto">
 <br>
 
-<br>**Example Age group comparison pearson correlation 1st D. differente scale: 75-79 vs 35-39<br>All data selected:**
-
+<br>**Example Age group comparison pearson correlation 1st D. differente scale: 75-79 vs 35-39**
+<br>all data selected:
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20age-compare%20pearson%20different%20scale%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50/AG)%202D%204Axis%20age-compare%20pearson%20different%20scale%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50%20AG_75-79%20vs%2035-39.png width="600" height="auto">
