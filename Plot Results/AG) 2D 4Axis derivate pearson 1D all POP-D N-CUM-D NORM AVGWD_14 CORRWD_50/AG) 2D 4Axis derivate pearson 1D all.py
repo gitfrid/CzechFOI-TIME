@@ -26,7 +26,7 @@ def main():
         "correl_data_series" : ""
     } 
 
-       
+    # csv datafiles     
     csv_files_dvd = [
         r"C:\Github\CzechFOI-TIME\TERRA\PVT_NUM_D.csv",
         r"C:\Github\CzechFOI-TIME\TERRA\PVT_NUM_DUVX.csv",
@@ -53,7 +53,9 @@ def main():
         r"C:\Github\CzechFOI-TIME\TERRA\PVT_NUM_VD7.csv",
         r"C:\Github\CzechFOI-TIME\TERRA\PVT_NUM_VDA.csv",
     ]
-  
+    
+    # data pairs to calcualte rolling correlation
+    # name/legend of trace must correspond with names in the pair list    
     pairs = [
         ('Avg 1D NUM_D', 'Avg 1D NUM_DUVX'),
         ('Avg 1D NUM_D', 'Avg 1D NUM_DVX'),
@@ -171,7 +173,7 @@ def main():
         cum_df.to_csv(output_file, index=False)
     
     # Initialize the directory and copy py script
-    #full_plotfile_name = init_function(f"{plo["name"]} {plo["pairs_text"]}")
+    # full_plotfile_name = init_function(f"{plo["name"]} {plo["pairs_text"]}")
     full_plotfile_name = init_function(f"{plo["name"]}")
     
     # Deaths normalized and then cumulated or not
@@ -261,10 +263,12 @@ def main():
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
         # Add traces for each dataframe (CSV-file)
+        # Attention when changing the trace names (legend text) 
+        # they must match the names from the pair list to calculate rolling correlation! 
         for i in range(0, len(dataframes_dvd)):
             # Get the color shades for the current dataset (ensure the shades list is long enough)
             shades_1, shades_2 = color_shades[i]
-
+            
             # Add traces for DVD on primary y-axis
             fig.add_trace(go.Scatter(
                 x=dataframes_dvd[i].iloc[:, 0],
@@ -273,7 +277,7 @@ def main():
                 line=dict(dash='solid', color=shades_1[0 % len(shades_1)]),
                 name=os.path.splitext(os.path.basename(csv_files_dvd[i]))[0][4:]
             ), secondary_y=False)
-
+            
             # Calculate add moving average for DVD
             moving_average_dvd = dataframes_dvd[i][age_band].rolling(window=plt["window_size_mov_average"]).mean()
             # Calculate the first derivative (approximate as the difference between consecutive moving averages)
@@ -376,8 +380,6 @@ def main():
             ), secondary_y=True)
 
         # Define colors for rolling correlation curves 
-        # colors = ['orangered', 'yellowgreen', 'deepskyblue']  
-        # Use Plotly's built-in 'Plotly' color palette (it has 24 distinct colors)
         color_palette = px.colors.qualitative.Plotly 
 
         # Extract data from the traces
@@ -394,9 +396,11 @@ def main():
             return np.array(correl_values)
 
         # Calculate and plot rolling correlation for each pair
+        # Attention when changing the trace names (legend text) they must match the names from the pair list! 
         for i, (name1, name2) in enumerate(pairs):
             try:
-                df1 = data[name1]
+                # name/legend of trace must correspond with names of pair list 
+                df1 = data[name1] 
                 df2 = data[name2]
             except KeyError as e:
                 print(f"KeyError: {e} not found in data")
@@ -438,11 +442,11 @@ def main():
             ),
             yaxis=dict(title=plo["yaxis1_title"], side='left'),
             yaxis2=dict(title='Values y2 VD', anchor='free', position=0.05, side='left'),
-            yaxis3=dict(title='Cumulative Values y3 VD', overlaying="y", position=0.9, side="right"),
+            yaxis3=dict(title='Cumulative Values y3 DVD', overlaying="y", position=0.9, side="right"),
             yaxis4=dict(title='Cumulative Values y4 VD', overlaying="y", side="right"),
-            yaxis5=dict(title='1st and 2nd Derivative y5', overlaying="y", side="left", position=0.15),  # First derivative y5
-            yaxis6=dict(title='1st and 2nd Derivative y6', overlaying="y", side="left", position=0.25),  # Second derivative y6
-            yaxis7=dict(title='Rolling Pearson Correlation y7', overlaying='y', side='right', position=0.8),  # Pearson y7
+            yaxis5=dict(title='1st and 2nd Derivative y5 DVD', overlaying="y", side="left", position=0.15),  # First derivative y5
+            yaxis6=dict(title='1st and 2nd Derivative y6 VD', overlaying="y", side="left", position=0.25),   # Second derivative y6
+            yaxis7=dict(title='Rolling Pearson Correlation y7', overlaying='y', side='right', position=0.8), # Pearson y7
             xaxis7=dict(title='Time', overlaying='x', side='bottom', position=0.5),  # Add this line for recurrence plot x-axis
             legend=dict(
                 orientation="v",
@@ -456,8 +460,7 @@ def main():
         )
 
         # Update trace assignment to the y-axes
-        num_additional_traces = 55  # Adjust if this number changes
-
+        num_additional_traces = len(fig.data) - 110 # 10 traces * 11 csv files
         # Go through all traces, excluding the additional ones
         for j in range(len(fig.data) - num_additional_traces):
             if j % 10 == 0 or j % 10 == 1:      # y1
@@ -483,8 +486,8 @@ def main():
         update_xaxis_title(is_standard_plot)
 
         # Save the plot to an HTML file
-        #fig.write_html(f"{full_plotfile_name} AG_{age_band}.html")
-        #print(f"Plot {full_plotfile_name} {age_band} has been saved to HTML file.")
+        # fig.write_html(f"{full_plotfile_name} AG_{age_band}.html")
+        # print(f"Plot {full_plotfile_name} {age_band} has been saved to HTML file.")
 
         # Save the plot to an HTML file with a custom legend
         html_file_path = f"{full_plotfile_name} AG_{age_band}.html"
