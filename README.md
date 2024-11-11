@@ -84,7 +84,8 @@ The original Czech FOI data, obtained through a Freedom of Information request,
 To import view and edit the FOI data in a SQlite database, you can use **DB Browser for SQLite**.
 
 Dates are counted as the number of days from 1 January 2020, as an integer number is easier to handle in the Python scripts than a date.
-AGE_2023 stands for the age at 1 January 2023, calculated from the year of birth. Norm means that the data has been normalised per 100000 to make it comparable.
+AGE_2023 stands for the age at 1 January 2023, calculated from the year of birth. Norm means that the data has been normalised per 100000 to make it comparable. 
+[Day Date Conversion](https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/Days%20to%20Date%20Translation%20Day%20Date%20Translation/Days%20to%20Date%20Translation%20Day%20Date%20Translation.png)
 
 The required views were processed using the file [All SQL Time.sql](https://github.com/gitfrid/CzechFOI-TIME/blob/main/SQLQueries/All%20SQL%20Time.sql), 
 <br>and the resulting views were manually exported to CSV files to the [TERRA folder](https://github.com/gitfrid/CzechFOI-TIME/tree/main/TERRA) 
