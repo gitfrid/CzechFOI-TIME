@@ -10,13 +10,15 @@ import plotly.express as px
 import xarray as xr
 import numpy as np
 import scipy.stats as stats
+from matplotlib import colors as mcolors 
+import colorsys
 
 
 def main():
 
     # set plot titele and the filename depending on choosed vars
     plt = {   
-        "title_text": "Rolling correlation significance test",         
+        "title_text": "Avg Rolling correlation significance test age diff of AG 15 years",         
         "window_size_correl": 50,
         "window_size_mov_average": 14,
         "normalize": True,
@@ -26,9 +28,32 @@ def main():
     } 
 
     pairs = [
-            ('NUM_VDA','NUM_DVX',),
-            ('NUM_VDA','NUM_DUVX'),
-            ('NUM_VDA','NUM_D')
+            ('Avg NUM_VDA','Avg NUM_DVX',),
+            ('Avg NUM_VDA','Avg NUM_DUVX'),
+            ('Avg NUM_VDA','Avg NUM_D')
+    ]
+
+    # List of tuples with the age bands you want to compare
+    age_band_compare = [
+        ('0-4', '20-24'),
+        ('5-9', '25-29'),
+        ('10-14', '30-34'),
+        ('15-19', '35-39'),
+        ('20-24', '40-44'),
+        ('25-29', '45-49'),
+        ('30-34', '50-54'),
+        ('35-39', '55-59'),
+        ('40-44', '60-64'),
+        ('45-49', '65-69'),
+        ('50-54', '70-74'),
+        ('55-59', '75-79'),
+        ('60-64', '80-84'),
+        ('65-69', '85-89'),
+        ('70-74', '90-94'),
+        ('75-79', '95-99'),
+        ('80-84', '100-104'),
+        ('85-89', '105-109'),
+        ('90-94', '110-114')
     ]
     
     csv_files_dvd = [
@@ -166,10 +191,9 @@ def main():
             p_values.append(p_value)
         
         return np.array(rolling_corr), np.array(p_values)
-
     
     def first_nonzero_index(series):
-        print("Series content:", series)  # Debugging: Print the series to check its content
+        # print("Series content:", series)  # Debugging: Print the series to check its content
         if isinstance(series, xr.DataArray):
             series = series.values  # Convert to NumPy array for processing
         non_zero_indices = np.nonzero(series)[0]
@@ -180,225 +204,305 @@ def main():
         
     # Choose a color palette with many colors
     color_palette = px.colors.qualitative.Dark24
+    color_palette_r = px.colors.qualitative.Dark24_r
 
-    # Create a plot for each age band
-    for age_band in age_bands:                   
+    # Function for creating shades (reusable for each color palette)
+    def generate_shades(base_color, num_shades=5, lightness_factor=0.1):
+        shades = []
+        # Convert hex color to RGB
+        if base_color.startswith("#"):            
+            base_color = mcolors.to_rgb(base_color)
+
+        # Convert RGB to HSV (hue, saturation, brightness)
+        hsv = colorsys.rgb_to_hsv(base_color[0], base_color[1], base_color[2])
+
+        # Create shades by varying the brightness
+        for i in range(num_shades):
+            new_value = min(1.0, max(0.4, hsv[2] + lightness_factor * (i - 2)))  # Adjust brightness
+            new_rgb = colorsys.hsv_to_rgb(hsv[0], hsv[1], new_value)  # Keep hue and saturation constant
+            new_hex = mcolors.rgb2hex(new_rgb)  # Convert back to Hex
+            shades.append(new_hex)
+
+        return shades
+
+    # Function for creating color pairs and shades
+    def generate_color_shades(color_palette, n_pairs=11):
+        color_shades = {}
+        for i in range(n_pairs):
+            # Select color pairs from the palette
+            base_color_dvd_1 = color_palette[i % len(color_palette)]
+            base_color_vd_1 = color_palette[(i + 1) % len(color_palette)]
+
+            # Calculate shading for the DVD and VD
+            shades_dvd_1 = generate_shades(base_color_dvd_1)
+            shades_vd_1 = generate_shades(base_color_vd_1)
+
+            # Save the shades
+            color_shades[i] = (shades_dvd_1, shades_vd_1)
+
+        return color_shades
+
+    # Generate shades for all color pairs
+    color_shades = generate_color_shades(color_palette, n_pairs=11)
+    color_shades_r = generate_color_shades(color_palette_r, n_pairs=11)
+    
+    # Loop through each pair of age bands in the list
+    # Attention when changing the trace names (legend text) 
+    # they must match the names from the pair list to calculate rolling correlation! 
+    pair_nr = 0    
+    for age_band_pair in age_band_compare:    
+        # Initialize the figure once before the loop
         fig = go.Figure()
-        fig = make_subplots(specs=[[{"secondary_y": True}]])
+        fig = make_subplots(specs=[[{"secondary_y": True}]])                        
+        # Loop through each individual age band in the tuple
+        for idx, age_band in enumerate(age_band_pair):  # Loop through each individual age band in the tuple
+            # Add traces for each dataframe (CSV-file)
+            for i in range(0, len(dataframes_dvd)):                
 
-        # Add traces for each dataframe (CSV-file)
-        for i in range(0, len(dataframes_dvd)):
-           
-            # Add traces for DVD on primary y-axis
-            fig.add_trace(go.Scatter(
-                x=dataframes_dvd[i].iloc[:, 0],
-                y=dataframes_dvd[i][age_band],
-                mode='lines',
-                line=dict(dash='solid', color=color_palette[i % len(color_palette)]),
-                name=os.path.splitext(os.path.basename(csv_files_dvd[i]))[0][4:]
-            ), secondary_y=False)
+                age_band_exension = age_band.split('-')[0]
 
-            # Calculate add moving average for DVD
-            moving_average_dvd = dataframes_dvd[i][age_band].rolling(window=plt["window_size_mov_average"]).mean()
-            fig.add_trace(go.Scatter(
-                x=dataframes_dvd[i].iloc[:, 0],
-                y=moving_average_dvd,
-                mode='lines',
-                line=dict(dash='solid', width=1, color=color_palette[i % len(color_palette)]),
-                name=f'Avg {os.path.splitext(os.path.basename(csv_files_dvd[i]))[0][4:]}',
-                showlegend=True
-            ), secondary_y=False)
+                # Get the color shades for the current dataset (ensure the shades list is long enough)
+                if idx == 0:   # First age band
+                   shades_1, shades_2 = color_shades[i]                    
+                elif idx == 1:  # Second age band reversd coloros
+                   shades_1, shades_2 = color_shades_r[i]                    
+                                                                                                                                                                                                                                                                               
+                # Add traces for DVD on primary y-axis
+                fig.add_trace(go.Scatter(
+                    x=dataframes_dvd[i].iloc[:, 0],
+                    y=dataframes_dvd[i][age_band],
+                    mode='lines',
+                    line=dict(dash='solid', color=shades_1[0 % len(shades_1)]),
+                    name=f'{os.path.splitext(os.path.basename(csv_files_dvd[i]))[0][4:]} {age_band_exension}'
+                ), secondary_y=False)
+               
+                # Calculate add moving average for DVD
+                moving_average_dvd = dataframes_dvd[i][age_band].rolling(window=plt["window_size_mov_average"]).mean()                
+                # Add trace for the moving average
+                fig.add_trace(go.Scatter(
+                    x=dataframes_dvd[i].iloc[:, 0],
+                    y=moving_average_dvd,
+                    mode='lines',
+                    line=dict(dash='solid', width=1, color=shades_1[1 % len(shades_1)]),
+                    name=f'Avg {os.path.splitext(os.path.basename(csv_files_dvd[i]))[0][4:]} {age_band_exension}',
+                    showlegend=True
+                ), secondary_y=False)
 
-            # Add trace for VD
-            fig.add_trace(go.Scatter(
-                x=dataframes_vd[i].iloc[:, 0],
-                y=dataframes_vd[i][age_band],
-                mode='lines',
-                line=dict(dash='dot', color=color_palette[i % len(color_palette)]),
-                name=os.path.splitext(os.path.basename(csv_files_vd[i]))[0][4:]
-            ), secondary_y=False)            
+                # Add cumulative DVD data traces on the secondary y-axis
+                fig.add_trace(go.Scatter(
+                    x=cumulat_dataframes_dvd[i].iloc[:, 0],
+                    y=cumulat_dataframes_dvd[i][age_band],
+                    mode='lines',
+                    line=dict(dash='solid', color=shades_1[4 % len(shades_1)]),
+                    name=f'cum {os.path.splitext(os.path.basename(csv_files_dvd[i]))[0][4:]} {age_band_exension}'
+                ), secondary_y=True)
+
+                # Add trace for VD
+                fig.add_trace(go.Scatter(
+                    x=dataframes_vd[i].iloc[:, 0],
+                    y=dataframes_vd[i][age_band],
+                    mode='lines',
+                    line=dict(dash='dot', color=shades_1[4 % len(shades_1)]),
+                    name=f'{os.path.splitext(os.path.basename(csv_files_vd[i]))[0][4:]} {age_band_exension}'
+                ), secondary_y=False)            
+
+                # Calculate add moving average for VD
+                moving_average_vd = dataframes_vd[i][age_band].rolling(window=plt["window_size_mov_average"]).mean()
+                fig.add_trace(go.Scatter(
+                    x=dataframes_vd[i].iloc[:, 0],
+                    y=moving_average_vd,
+                    mode='lines',
+                    line=dict(dash='solid', width=1, color=shades_1[4 % len(shades_1)]),
+                    name=f'Avg {os.path.splitext(os.path.basename(csv_files_vd[i]))[0][4:]} {age_band_exension}',
+                    showlegend=True
+                ), secondary_y=False)
+
+                # Add cumulative VD data traces on the secondary y-axis
+                fig.add_trace(go.Scatter(
+                    x=cumulative_dataframes_vd[i].iloc[:, 0],
+                    y=cumulative_dataframes_vd[i][age_band],
+                    mode='lines',
+                    line=dict(dash='dot', color=shades_1[4 % len(shades_1)]),
+                    name=f'cum {os.path.splitext(os.path.basename(csv_files_vd[i]))[0][4:]} {age_band_exension}'
+                ), secondary_y=True)
             
-            # Calculate add moving average for VD
-            moving_average_vd = dataframes_vd[i][age_band].rolling(window=plt["window_size_mov_average"]).mean()
-            fig.add_trace(go.Scatter(
-                x=dataframes_vd[i].iloc[:, 0],
-                y=moving_average_vd,
-                mode='lines',
-                line=dict(dash='solid', width=1, color=color_palette[i % len(color_palette)]),
-                name=f'Avg {os.path.splitext(os.path.basename(csv_files_vd[i]))[0][4:]}',
-                showlegend=True
-            ), secondary_y=False)
+            moving_averages = {}
+            for trace in fig.data:  # Loop through all traces
+                if trace.y is not None and len(trace.y) > 0:
+                    y_data = np.array(trace.y).flatten()
+                    moving_averages[trace.name] = xr.DataArray(y_data, dims='time', coords={'time': np.arange(len(y_data))})
+                else:
+                    print(f"Warning: {trace.name} has no data or invalid data: {len(trace.y)} ")
 
-            # Add cumulative DVD data traces on the secondary y-axis
-            fig.add_trace(go.Scatter(
-                x=cumulat_dataframes_dvd[i].iloc[:, 0],
-                y=cumulat_dataframes_dvd[i][age_band],
-                mode='lines',
-                line=dict(dash='solid', color=color_palette[i % len(color_palette)]),
-                name=f'cum {os.path.splitext(os.path.basename(csv_files_dvd[i]))[0][4:]}'
-            ), secondary_y=True)
+            # Define colors for 3 rolling correlation curves 
+            if idx == 0:   # First age band
+                   colors = ['orangered', 'yellowgreen', 'deepskyblue']                    
+            elif idx == 1:  # Second age band reversd coloros
+                   colors = ['darkblue', 'purple', 'darkorange']    
 
-            # Add cumulative VD data traces on the secondary y-axis
-            fig.add_trace(go.Scatter(
-                x=cumulative_dataframes_vd[i].iloc[:, 0],
-                y=cumulative_dataframes_vd[i][age_band],
-                mode='lines',
-                line=dict(dash='dot', color=color_palette[i % len(color_palette)]),
-                name=f'cum {os.path.splitext(os.path.basename(csv_files_vd[i]))[0][4:]}'
-            ), secondary_y=True)
+            window_size = plt["window_size_correl"]
 
-        # Extract moving averages from the traces
-        #moving_averages = {trace.name: xr.DataArray(trace.y, dims='time', coords={'time': np.arange(len(trace.y))}) for trace in fig.data}
-        moving_averages = {}
-        if trace.y is not None and len(trace.y) > 0:
-                y_data = np.array(trace.y).flatten()
-                moving_averages[trace.name] = xr.DataArray(y_data, dims='time', coords={'time': np.arange(len(y_data))})
-        else:
-                print(f"Warning: {trace.name} has no data or invalid data.")
+            for n, (name1, name2) in enumerate(pairs):
+                try:
+                    name1 = f"{name1} {age_band_exension}"
+                    name2 = f"{name2} {age_band_exension}"
+                    moving_avg_df1 = moving_averages[name1]
+                    moving_avg_df2 = moving_averages[name2]
+                except KeyError as e:
+                    print(f"KeyError: {e} not found in moving_averages")
+                    continue                         
 
+                # Filter and align the moving averages
+                filtered_df1, filtered_df2 = filter_and_align(moving_avg_df1, moving_avg_df2)
+                
+                # make shure filterd data exists 
+                if len(filtered_df1) == 0 or len(filtered_df2) == 0:
+                    print(f"Filtered data for {name1} and {name2} is empty. Skipping this pair.")
+                    continue
 
-        # Define colors for 3 rolling correlation curves 
-        colors = ['orangered', 'yellowgreen', 'deepskyblue']
-        window_size = plt["window_size_correl"]
+                # rolling significanctest
+                rolling_corr, p_values = rolling_significance_test(filtered_df1, filtered_df2, window_size)
+                
+                # plot rolling correlation and significance 
+                time_indices = np.arange(window_size - 1, len(filtered_df1))
+                fig.add_trace(go.Scatter(
+                    x=time_indices,
+                    y=rolling_corr,
+                    mode='lines',
+                    name=f'Rolling Corr {name1}<br>{name2}',
+                    line=dict(dash='solid', width=1.5, color=colors[i % len(colors)])
+                ))
+                
+                # Plotting the significant correlation indicators
+                fig.add_trace(go.Scatter(
+                    x=time_indices,
+                    y=(p_values < 0.05).astype(int),  # Mark 1 for significant values
+                    mode='lines',
+                    name=f'Significant Corr {name1}<br>{name2} (p<0.05)',
+                    line=dict(dash='dash', width=1, color=colors[i % len(colors)]),
+                ))
 
-        for i, (name1, name2) in enumerate(pairs):
-            try:
-                moving_avg_df1 = moving_averages[name1]
-                moving_avg_df2 = moving_averages[name2]
-            except KeyError as e:
-                print(f"KeyError: {e} not found in moving_averages")
-                continue
+                # Plotting the p-values as hover text
+                fig.add_trace(go.Scatter(
+                    x=time_indices,
+                    y=p_values,  # The raw p-values
+                    mode='lines+markers',
+                    name=f'P-Values {name1}<br>{name2}',
+                    line=dict(dash='dot', width=1, color='gray'),  # Use a different style for visibility
+                    text=p_values,  # Use p-values directly for hover text
+                    hoverinfo='text',  # Show only text when hovering
+                ))
 
-            # Filter and align the moving averages
-            filtered_df1, filtered_df2 = filter_and_align(moving_avg_df1, moving_avg_df2)
-            
-            # make shure filterd data exists 
-            if len(filtered_df1) == 0 or len(filtered_df2) == 0:
-                print(f"Filtered data for {name1} and {name2} is empty. Skipping this pair.")
-                continue
+                # Adding the red horizontal line at p = 0.05
+                fig.add_trace(go.Scatter(
+                    x=time_indices,
+                    y=[0.05] * len(time_indices),  # Constant line at p = 0.05
+                    mode='lines',
+                    name=f'p = 0.05 significance level {age_band_exension}',
+                    line=dict(color='red', width=1, dash='dash')  # Red dashed line
+                ))
 
-            # Rollender Signifikanztest
-            rolling_corr, p_values = rolling_significance_test(filtered_df1, filtered_df2, window_size)
-            
-            # Plotten der rollenden Korrelation und Signifikanzanzeige
-            time_indices = np.arange(window_size - 1, len(filtered_df1))
-            fig.add_trace(go.Scatter(
-                x=time_indices,
-                y=rolling_corr,
-                mode='lines',
-                name=f'Rolling Corr {name1}<br>{name2}',
-                line=dict(dash='solid', width=1.5, color=colors[i % len(colors)])
-            ))
-            
-            # Plotting the significant correlation indicators
-            fig.add_trace(go.Scatter(
-                x=time_indices,
-                y=(p_values < 0.05).astype(int),  # Mark 1 for significant values
-                mode='lines',
-                name=f'Significant Corr {name1}<br>{name2} (p<0.05)',
-                line=dict(dash='dash', width=1, color=colors[i % len(colors)]),
-            ))
-
-            # Plotting the p-values as hover text
-            fig.add_trace(go.Scatter(
-                x=time_indices,
-                y=p_values,  # The raw p-values
-                mode='lines+markers',
-                name=f'P-Values {name1}<br>{name2}',
-                line=dict(dash='dot', width=1, color='gray'),  # Use a different style for visibility
-                text=p_values,  # Use p-values directly for hover text
-                hoverinfo='text',  # Show only text when hovering
-            ))
-
-            # Adding the red horizontal line at p = 0.05
-            fig.add_trace(go.Scatter(
-                x=time_indices,
-                y=[0.05] * len(time_indices),  # Constant line at p = 0.05
-                mode='lines',
-                name='p = 0.05 significance level',
-                line=dict(color='red', width=1, dash='dash')  # Red dashed line
-            ))
-
-            # Set y-axis to a logarithmic scale type="log",
-            fig.update_yaxes( title_text='Log(P-Values)', secondary_y=False)
+                # Set y-axis to a logarithmic scale type="log",
+                fig.update_yaxes( title_text='Log(P-Values)', secondary_y=False)
 
 
+            # Update plot layout for dual y-axes 
+            plo["age_band"] = age_band       
+            fig.update_layout(
+                colorway=color_palette,
+                title=dict( 
+                    text=f'{plo["title_text"]} AGE: {age_band_compare[pair_nr][0]} vs {age_band_compare[pair_nr][1]}<br><br><sup>{plo["subtitle_text"]}</sup>',
+                    y=0.97, 
+                    font=dict(size=18),
+                    x=0.2, 
+                    xanchor='center', 
+                    yanchor='top'
+                ),
+                xaxis=dict(title='Day from 2020-01-01'),
+                yaxis=dict(
+                    title=plo["yaxis1_title"],
+                    side='left'
+                ),
+                yaxis2=dict(
+                    title=f'Values y2 VD',
+                    anchor='free',
+                    position=0.05,
+                    side='left',
+                    autorange=True
+                ),
+                yaxis3=dict(
+                    title=plo["yaxis3_title"],
+                    overlaying="y",
+                    side="right",
+                    position=0.9,
+                    autorange=True
+                ),
+                yaxis4=dict(
+                    title=f'Cumulative Values y4 VD',
+                    overlaying="y",
+                    side="right",
+                    autorange=True
+                ),
+                yaxis5=dict(
+                    title=f'Rolling correlation (CCF) y5',
+                    overlaying="y",
+                    side="right",
+                    position=0.8
+                ),   
+                legend=dict(
+                    orientation="v",
+                    xanchor="left",
+                    x=1.05,
+                    yanchor="top",
+                    y=1,
+                    font=dict(size=10)
+                ),
+                margin=dict(l=40, r=50, t=40, b=40)
+            )
 
-        # Update plot layout for dual y-axes 
-        plo["age_band"] = age_band       
-        fig.update_layout(
-            colorway=color_palette,
-            title=dict( 
-                text = f'{plo["title_text"]} AGE: {age_band}<br><br><sup>{plo["subtitle_text"]}</sup>',
-                y=0.97, 
-                font=dict(size=18),
-                x=0.2, 
-                xanchor='center', 
-                yanchor='top'
-            ),
-            xaxis=dict(title='Day from 2020-01-01'),
-            yaxis=dict(
-                title=plo["yaxis1_title"],
-                side='left'
-            ),
-            yaxis2=dict(
-                title=f'Values y2 VD',
-                anchor='free',
-                position=0.05,
-                side='left'
-            ),
-            yaxis3=dict(
-                title=plo["yaxis3_title"],
-                overlaying="y",
-                side="right",
-                position=0.9
-            ),
-            yaxis4=dict(
-                title=f'Cumulative Values y4 VD',
-                overlaying="y",
-                side="right"
-            ),
-            yaxis5=dict(
-                title=f'Rolling correlation (CCF) y5',
-                overlaying="y",
-                side="right",
-                position=0.8
-            ),   
-            legend=dict(
-                orientation="v",
-                xanchor="left",
-                x=1.05,
-                yanchor="top",
-                y=1,
-                font=dict(size=10)
-            ),
-            margin=dict(l=40, r=50, t=40, b=40)
-        )
+            if idx == 0:  # First age band - Use y1 to y7                
+                    num_additional_traces1 = len(fig.data) - 66 # 6 traces * 11 csv files first ag_band
+                    start = 0
+                    end = len(fig.data) - num_additional_traces1
+                    print(f'indx: {idx} num_additional_traces1: {num_additional_traces1 }')
 
-        # update trace assignment to the y-axes
-        # minus the three additional CCF correlation traces
-        for j in range(len(fig.data) - 3):
-            if j % 6 == 0 or j % 6 == 1:
-                fig.data[j].update(yaxis='y1')
-            elif j % 6 == 2 or j % 6 == 3:
-                fig.data[j].update(yaxis='y2')
-            elif j % 6 == 4:
-                fig.data[j].update(yaxis='y3')
-            elif j % 6 == 5:
-                fig.data[j].update(yaxis='y4')
+            elif idx == 1: 
+                    num_additional_traces2 = len(fig.data) - (132 + num_additional_traces1)  # 6 traces * 22 csv files second ageband
+                    start = 66 + num_additional_traces1
+                    end = len(fig.data) - num_additional_traces2
+                    print(f'indx: {idx} num_additional_traces2: {num_additional_traces2 }')
 
-        # Assignment of the curves for CCF correlation 1-3
-        # on the same axis to obtain the same scale
-        fig.data[len(fig.data)-1].update(yaxis='y5')
-        fig.data[len(fig.data)-2].update(yaxis='y5')
-        fig.data[len(fig.data)-3].update(yaxis='y5')
+            # update trace assignment to the y-axes
+            # minus the three additional CCF correlation traces
+            print(f'start: {start} end: {end}')
+            for j in range(start, end):  
+                if j % 6 == 0 or j % 6 == 1:
+                    fig.data[j].update(yaxis='y1')
+                elif j % 6 == 2 or j % 6 == 3:
+                    fig.data[j].update(yaxis='y2')
+                elif j % 6 == 4:
+                    fig.data[j].update(yaxis='y3')
+                elif j % 6 == 5:
+                    fig.data[j].update(yaxis='y4')
 
-        # Save the plot to an HTML file
-        #fig.write_html(f"{full_plotfile_name} AG_{age_band}.html")
-        #print(f"Plot {full_plotfile_name} {age_band} has been saved to HTML file.")
+            # Assignment of the curves for CCF correlation 1-3
+            # on the same axis to obtain the same scale
+            if idx == 0:  
+                # Additional correlation traces for the first age band should use y5
+                for i in range(1, num_additional_traces1 + 1):
+                    fig.data[-i].update(yaxis='y5')  
+            elif idx == 1: 
+                # Additional correlation traces for the second age band should use same axis y5
+                for i in range(1, num_additional_traces2 + 1):
+                    fig.data[-i].update(yaxis='y5')  
+
+            # Save the plot to an HTML file
+            #fig.write_html(f"{full_plotfile_name} AG_{age_band}.html")
+            #print(f"Plot {full_plotfile_name} {age_band} has been saved to HTML file.")
 
         # Save the plot to an HTML file with a custom legend
-        html_file_path = f"{full_plotfile_name} AG_{age_band}.html"
+        html_file_path = f"{full_plotfile_name} AG_{age_band_compare[pair_nr][0]} vs {age_band_compare[pair_nr][1]}.html"
+        pair_nr += 1 
 
         # Prepare custom legend items based on the figure traces
         legend_items = []
