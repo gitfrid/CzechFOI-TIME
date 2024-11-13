@@ -9,7 +9,13 @@ The resulting 2D diagrams are interactive HTML files  - more analyses will follo
 <br>To deselct all curves, double-click on a legend entry. To show a curve click onec on the legend entry. 
 <br>You can download them from the [Plot Results Folder](https://github.com/gitfrid/CzechFOI-TIME/tree/main/Plot%20Results)
 
-<br>**Example of an interactive plot of the Czech FOI data <br>Age group comparison pearson correlation 1st derivative same scale: 75-79 vs 80-84**
+<br>**Example of an interactive plot of the Czech FOI data <br>Age group comparison correlation significance xarray: 35-39 vs 55-59**
+_________________________________________
+<br>
+<img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AH)%202D%204Axis%20age-compare%20significance%20xarray%20all%20AVG_14%20CORR_50%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D/AH)%202D%204Axis%20age-compare%20significance%20xarray%20all%20AVG_14%20CORR_50%20ANUM_VDA-ANUM_DVX%20ANUM_VDA-ANUM_DUVX%20ANUM_VDA-ANUM_D%20AG_35-39%20vs%2055-59.png width="600" height="auto">
+<br>
+
+<br>**Example Age group comparison pearson correlation 1st derivative same scale: 75-79 vs 80-84**
 _________________________________________
 <br>
 <img src=https://github.com/gitfrid/CzechFOI-TIME/blob/main/Plot%20Results/AG)%202D%204Axis%20age-compare%20pearson%20same%20scale%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50/AG)%202D%204Axis%20age-compare%20pearson%20same%20scale%201D%20all%20POP-D%20N-CUM-D%20NORM%20AVGWD_14%20CORRWD_50%20AG_75-79%20vs%2080-84.png width="600" height="auto">
